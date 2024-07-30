@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format=('%(levelname)s-%(message)s'))
 logger = logging.getLogger(__name__)
 
 # 设置路径
-# image_folder_path = '../cable_rarity1300/images'
+# image_folder_path = '../cable_rarity1300/images' #使用原数据集
 image_folder_path = '../cropped_images'  # 使用裁剪后的数据集
 annotation_folder_path = '../cable_rarity1300/Annotations'
 index_filename = "image_features.index"
@@ -25,11 +25,15 @@ if os.path.exists(dict_filename):
 
 if not os.listdir(image_folder_path):
     logging.error(f"The folder '{image_folder_path}' is empty.")
-    exit(1)  # 退出脚本并返回状态码1，表示出错
+    exit(1)
 else:
     # 初始化AutoImageProcessor和AutoModel
-    processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
-    model = AutoModel.from_pretrained('facebook/dinov2-small')
+    # 如果本地没有下载dinov2-small模型，则：
+    # processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
+    # model = AutoModel.from_pretrained('facebook/dinov2-small')
+    # 如果本地已经下载了dinov2-small模型，则输入模型所在的文件夹：
+    processor = AutoImageProcessor.from_pretrained('../dinov2-small')
+    model = AutoModel.from_pretrained('../dinov2-small')
     # 初始化Faiss索引，这里使用FlatL2索引，基于L2距离
     d = 257*384
     index = faiss.IndexFlatIP(d)
@@ -41,7 +45,7 @@ else:
             image_path = os.path.join(image_folder_path, image_filename)
 
             # 解析对应的XML文件，获取类别信息
-            annotation_filename = image_filename.replace('.jpg', '.xml')  # 获取annotation文件名 前提为xml文件仅后缀不同
+            annotation_filename = image_filename.replace('.jpg', '.xml')  # 获取annotation文件名 默认xml文件仅后缀不同
             annotation_path = os.path.join(annotation_folder_path, annotation_filename)  # 获取annotation文件路径
             tree = ET.parse(annotation_path)
             root = tree.getroot()
@@ -71,8 +75,6 @@ else:
     # 保存索引到文件
     faiss.write_index(index, index_filename)
     logging.info('Finished saving index')
-    # num_vectors = index.ntotal
-    # logging.info('%d', num_vectors)
 
     with open(dict_filename, 'w') as f:
         json.dump(index_to_image_info, f)

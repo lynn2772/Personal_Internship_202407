@@ -11,19 +11,24 @@ start_time = time.time()  # 记录开始时间
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 # 初始化AutoImageProcessor和AutoModel
-processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
-model = AutoModel.from_pretrained('facebook/dinov2-small')
+# 如果本地没有下载dinov2-small模型，则：
+# processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
+# model = AutoModel.from_pretrained('facebook/dinov2-small')
+# 如果本地已经下载了dinov2-small模型，则输入模型所在的文件夹：
+processor = AutoImageProcessor.from_pretrained('../dinov2-small')
+model = AutoModel.from_pretrained('../dinov2-small')
 
+process_model_time = time.time() - start_time
+logging.info("Processing model took time: {}".format(process_model_time))
 # 加载Faiss索引
 index_path = "image_features.index"
 index = faiss.read_index(index_path)
 #字典路径
 dict_path = "index_to_image_info.json"
 #设置输入图片路径
-input_image_path = "../cropped_images/ra_52.jpg"
+input_image_path = "../cropped_images/ra_1.jpg"
 def knn_search(image_path, k=1):
     """使用Faiss进行k-最近邻搜索"""
-    # knn_start_time = time.time()
 
     image = Image.open(image_path)
     # 处理图片并获取模型输出
@@ -33,9 +38,6 @@ def knn_search(image_path, k=1):
     features = features.reshape(1, -1)
 
     D, I = index.search(features, k)
-
-    # knn_time = time.time() - knn_start_time
-    # logging.info(f"Knn took {knn_time:.4f} seconds")
     return D[0],I[0]  # 返回最近邻的索引数组
 
 def retrieve_similar_images(input_image_path, k=1):
@@ -78,5 +80,5 @@ if __name__ == "__main__":
 
     retrieve_similar_images(input_image_path, k=3)
 
-    time = time.time() - start_time
-    logging.info(f"Script took {time:.4f} seconds")
+    script_time = time.time() - start_time
+    logging.info(f"Script took {script_time:.4f} seconds")
