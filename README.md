@@ -8,6 +8,8 @@ This repository is created to manage and save my personal code that I wrote duri
 
 1.create_image_dataset
 
+2.README.md
+
 # How to use
 
 ## create_image_dataset
@@ -18,6 +20,23 @@ This repository is created to manage and save my personal code that I wrote duri
 
 ### Implementation Details
 
+#### 2024年7月27日
+
 主要使用了[DINOv2模型](https://hf-mirror.com/facebook/dinov2-small)和Faiss库完成了创建图像特征向量，并通过图像检索的功能。  
+
 对于load_image.py，DINOv2可以从图像中提取通用特征向量，通过Faiss保存在index文件中，并且构建一个索引和图像路径相对应的字典，保存在json文件中。  
+
 对于retrieve_image.py，首先将待检索的图像提取出特征向量，计算余弦相似度通过Knn最近邻搜索出最相似的图片，并返回索引和图像。
+
+
+
+#### 2024年7月30日
+
+新增了代码文件crop.py，实现了根据.../cable_rarity1300/Annotations的xml文件中的boundbox切割../cable_rarity1300/images图像的功能，将处理后的图片存入上一级目录../cropped_images  ；新增了保存图像索引、路径、标签的字典index_to_image_info.json文件
+
+修改了代码文件load_image.py和retrieve_image.py，实现了构建一个索引、路径、标签的字典的功能，其中标签依然同上的xml文件中读取；同样的，实现了在检索图像后也能输出其标签的功能。  
+
+更新了requirements.txt文件。  
+
+注：没有上传数据集文件夹，即cable_rarity1300；没有上传保存图像向量的向量库文件，即image_features.index文件。
+
