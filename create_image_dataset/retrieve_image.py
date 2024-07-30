@@ -23,10 +23,12 @@ logging.info("Processing model took time: {}".format(process_model_time))
 # 加载Faiss索引
 index_path = "image_features.index"
 index = faiss.read_index(index_path)
-#字典路径
+# 字典路径
 dict_path = "index_to_image_info.json"
-#设置输入图片路径
+# 设置输入图片路径
 input_image_path = "../cropped_images/ra_1.jpg"
+
+
 def knn_search(image_path, k=1):
     """使用Faiss进行k-最近邻搜索"""
 
@@ -38,7 +40,8 @@ def knn_search(image_path, k=1):
     features = features.reshape(1, -1)
 
     D, I = index.search(features, k)
-    return D[0],I[0]  # 返回最近邻的索引数组
+    return D[0], I[0]  # 返回最近邻的索引数组
+
 
 def retrieve_similar_images(input_image_path, k=1):
     """检索最相似的图片并显示"""
@@ -47,7 +50,7 @@ def retrieve_similar_images(input_image_path, k=1):
     logging.info(f"Distances: {distances}")
     logging.info(f"Indices: {indices}")
     for idx in indices:
-        str_idx=str(idx)
+        str_idx = str(idx)
         if str_idx in index_to_image_info:
             image_info = index_to_image_info[str_idx]
             image_path = image_info["path"]
@@ -61,6 +64,7 @@ def retrieve_similar_images(input_image_path, k=1):
         else:
             logging.warning(f"Index {idx} does not exist in the dictionary.")
     return
+
 
 if __name__ == "__main__":
     image = Image.open(input_image_path)

@@ -2,6 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 from PIL import Image
 
+
 def crop_images(annotations_dir, images_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -33,6 +34,7 @@ def crop_images(annotations_dir, images_dir, output_dir):
             cropped_filename = f"{base_filename}.jpg"
             cropped_image.save(os.path.join(output_dir, cropped_filename))
             print(f"Cropped image saved as {cropped_filename}")
+
 
 # 指定路径
 annotations_dir = '../cable_rarity1300/Annotations'

@@ -35,7 +35,7 @@ else:
     processor = AutoImageProcessor.from_pretrained('../dinov2-small')
     model = AutoModel.from_pretrained('../dinov2-small')
     # 初始化Faiss索引，这里使用FlatL2索引，基于L2距离
-    d = 257*384
+    d = 257 * 384
     index = faiss.IndexFlatIP(d)
 
     index_to_image_info = {}
@@ -50,7 +50,7 @@ else:
             tree = ET.parse(annotation_path)
             root = tree.getroot()
             label = root.find('object/name').text  # 获取类别名称
-            
+
             # 提取图片特征向量
             image = Image.open(image_path)
             inputs = processor(images=image, return_tensors="pt")
