@@ -4,8 +4,10 @@ import os
 import faiss
 import logging
 import json
+import time
 from xml.etree import ElementTree as ET
 
+start_time = time.time()
 logging.basicConfig(level=logging.INFO, format=('%(levelname)s-%(message)s'))
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,7 @@ if os.path.exists(dict_filename):
     logger.info("Removing old dictionary file")
 
 if not os.listdir(image_folder_path):
-    logging.error(f"The folder '{image_folder_path}' is empty.")
+    logging.error(f"The folder {image_folder_path} is empty.")
     exit(1)
 else:
     # 初始化AutoImageProcessor和AutoModel
@@ -74,7 +76,8 @@ else:
 
     # 保存索引到文件
     faiss.write_index(index, index_filename)
-    logging.info('Finished saving index')
+    script_time = time.time() - start_time
+    logging.info(f'Finished saving index, {index.ntotal} images in total, and took {script_time} seconds')
 
     with open(dict_filename, 'w') as f:
         json.dump(index_to_image_info, f)
