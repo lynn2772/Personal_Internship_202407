@@ -5,3 +5,4 @@ clip==1.0
 pillow==10.4.0
 ultralytics==8.2.68
 transformers==4.42.4
+scikit-learn==1.3.2

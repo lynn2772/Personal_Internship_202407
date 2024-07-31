@@ -30,9 +30,9 @@ This repository is created to manage and save my personal code that I wrote duri
 
 主要使用了[DINOv2模型](https://hf-mirror.com/facebook/dinov2-small)和Faiss库完成了创建图像特征向量，并通过图像检索的功能。  
 
-对于load_image.py，DINOv2可以从图像中提取通用特征向量，通过Faiss保存在index文件中，并且构建一个索引和图像路径相对应的字典，保存在json文件中。  
+对于load_image.py，DINOv2可以从图像中提取通用特征向量，降维后通过Faiss保存在index文件中，并且构建一个索引和图像路径、类别相对应的字典，保存在json文件中。  
 
-对于retrieve_image.py，首先将待检索的图像提取出特征向量，计算余弦相似度通过Knn最近邻搜索出最相似的图片，并返回索引和图像。
+对于retrieve_image.py，首先将待检索的图像提取出特征向量，降维后计算余弦相似度通过Knn最近邻搜索出最相似的图片，并返回索引和图像。
 
 ### History
 
@@ -41,6 +41,9 @@ This repository is created to manage and save my personal code that I wrote duri
 feat：新增了代码文件crop.py，同事实现了根据.../cable_rarity1300/Annotations的xml文件中的boundbox切割../cable_rarity1300/images图像的功能，将处理后的图片存入上一级目录../cropped_images；新增了保存图像索引、路径、标签的字典index_to_image_info.json文件。
 
 docs：修改了代码文件load_image.py和retrieve_image.py，修改后load_image.py读取裁剪后的数据集实现了构建一个索引、路径、标签的字典的功能，其中标签依然同上的xml文件中读取；同样的，实现了在检索图像后也能输出其标签的功能；修改后通过同一个上级目录下的文件夹加载模型；删除了一些不必要的注释；更新了requirements.txt文件。 
+
+#### 2024年7月31日
+docs：修改了代码文件load_image.py和retrieve_image.py，加入了PCA，在存入向量库之前首先进行了降维，使得向量长度大大缩减，生成的index文件大小为原来的十分之一；上传了index文件，即image_features.index；更新了json文件；更新了requirements.txt文件。
 
 ### Details
 
