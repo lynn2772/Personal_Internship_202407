@@ -36,6 +36,7 @@ else:
     # 如果本地没有下载dinov2-small模型，则：
     # processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
     # model = AutoModel.from_pretrained('facebook/dinov2-small')
+
     # 如果本地已经下载了dinov2-small模型，则输入模型所在的文件夹：
     processor = AutoImageProcessor.from_pretrained('../dinov2-small')
     model = AutoModel.from_pretrained('../dinov2-small')
@@ -69,8 +70,6 @@ else:
             # 提取图片特征向量
             image = Image.open(image_path)
 
-            # width, height = image.size
-
             inputs = processor(images=image, return_tensors="pt")
             outputs = model(**inputs)
             features = outputs.last_hidden_state[0].detach().numpy()
@@ -78,7 +77,7 @@ else:
             # 如果不使用pca
             # reshaped_feature = features.reshape(1, -1)
             # 如果使用pca
-            pca = PCA(n_components=44) # 经过计算，此数据集在保留44维向量时，所有图像的新特征向量方差占比超过0.9。index文件大小为原来的十分之一
+            pca = PCA(n_components=pca_dimension) # 经过计算，此数据集在保留44维向量时，所有图像的新特征向量方差占比超过0.9。index文件大小为原来的十分之一
             pca_feature = pca.fit_transform(features)
             reshaped_feature = pca_feature.reshape(1, -1)
 

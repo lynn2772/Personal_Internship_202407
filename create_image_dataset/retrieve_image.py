@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 # 如果本地没有下载dinov2-small模型，则：
 # processor = AutoImageProcessor.from_pretrained('facebook/dinov2-small')
 # model = AutoModel.from_pretrained('facebook/dinov2-small')
+
 # 如果本地已经下载了dinov2-small模型，则输入模型所在的文件夹：
 processor = AutoImageProcessor.from_pretrained('../dinov2-small')
 model = AutoModel.from_pretrained('../dinov2-small')
@@ -86,7 +87,7 @@ if __name__ == "__main__":
         logging.error(f"Dictionary file '{dict_path}' does not exist.")
         exit(1)
 
-    retrieve_similar_images(input_image_path, k=3)
+    retrieve_similar_images(input_image_path, k=10)
 
     script_time = time.time() - start_time
     logging.info(f"Script took {script_time:.4f} seconds")
