@@ -3,6 +3,7 @@ import faiss
 import logging
 import json
 from PIL import Image
+from sklearn.decomposition import PCA
 from transformers import AutoImageProcessor, AutoModel
 import time  # 导入time模块
 
@@ -27,6 +28,7 @@ index = faiss.read_index(index_path)
 dict_path = "index_to_image_info.json"
 # 设置输入图片路径
 input_image_path = "../cropped_images/ra_1.jpg"
+# input_image_path = "../cable_rarity1300/images/ra_2.jpg"
 
 
 def knn_search(image_path, k=1):
@@ -37,9 +39,11 @@ def knn_search(image_path, k=1):
     inputs = processor(images=image, return_tensors="pt")
     outputs = model(**inputs)
     features = outputs.last_hidden_state[0].detach().numpy()
-    features = features.reshape(1, -1)
+    pca = PCA(n_components=44)  # 进行相同的pca降维，保证与数据库中的向量长度相同
+    pca_feature = pca.fit_transform(features)
+    reshaped_feature = pca_feature.reshape(1, -1)
 
-    D, I = index.search(features, k)
+    D, I = index.search(reshaped_feature, k)
     return D[0], I[0]  # 返回最近邻的索引数组
 
 
